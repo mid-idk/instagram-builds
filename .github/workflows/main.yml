@@ -1,0 +1,23 @@
+name: Build My Instagram
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Latest APK from Drifty
+        run: |
+          echo "Скачиваем актуальный релиз напрямую от driftywinds..."
+          URL=$(curl -s https://github.com | grep "browser_download_url.*apk" | head -n 1 | cut -d '"' -f 4)
+          if [ -z "$URL" ]; then
+            echo "Ошибка: не удалось найти APK в релизах Drifty!" && exit 1
+          fi
+          curl -L -o my_instagram.apk "$URL"
+          
+      - name: Upload Finished APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: My-Instagram-Build
+          path: my_instagram.apk
+          
